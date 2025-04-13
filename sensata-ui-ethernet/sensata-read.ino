@@ -2,37 +2,36 @@
 #include <vector>
 #include <string>
 
-#define P0_PIN 16
+#define P0_PIN 18
 #define P0_IMIN 4.0f
 #define P0_IMAX 20.0f
 #define P0_PMIN 0.0f
 #define P0_PMAX 1000.0f
 
-#define P1_PIN 17
+#define P1_PIN 19
 #define P1_IMIN 4.0f
 #define P1_IMAX 20.0f
 #define P1_PMIN 0.0f
 #define P1_PMAX 1000.0f
 
-#define P2_PIN 18
+#define P2_PIN 24
 #define P2_IMIN 4.0f
 #define P2_IMAX 20.0f
 #define P2_PMIN 0.0f
 #define P2_PMAX 1000.0f
 
-#define P3_PIN 19
+#define P3_PIN 25
 #define P3_IMIN 4.0f
 #define P3_IMAX 20.0f
 #define P3_PMIN 0.0f
 #define P3_PMAX 1000.0f
 
-#define P4_PIN 20
+#define P4_PIN 26
 #define P4_IMIN 4.0f
 #define P4_IMAX 20.0f
 #define P4_PMIN 0.0f
 #define P4_PMAX 1000.0f
 
-// Use 220-ohm resistor for current-to-voltage conversion
 #define CURRENT_SENSE_RESISTOR 220.0f
 #define VREF 3.3f
 #define COUNTS 1023.0f
@@ -60,6 +59,10 @@ float mapFloat(float x, float in_min, float in_max, float out_min, float out_max
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
+float correctPressure(float rawPressure) {
+  return rawPressure;
+}
+
 // void setup() {
 //   Serial.begin(115200);
 //   analogReadAveraging(8);
@@ -70,13 +73,15 @@ void readSensatas() {
     int raw = analogRead(sensatas[i].pin);
     float voltage = raw * (VREF / COUNTS);              // Convert ADC to voltage
     float current_mA = (voltage / CURRENT_SENSE_RESISTOR) * 1000.0f; // Voltage to current in mA
-    sensataReadings[i] = mapFloat(
+    float pressure = mapFloat(
       current_mA,
       sensatas[i].i_min,
       sensatas[i].i_max,
       sensatas[i].p_min,
       sensatas[i].p_max
     );
+    pressure = correctPressure(pressure);
+    sensataReadings[i] = pressure;
   }
 }
 

@@ -99,6 +99,7 @@ void loop()
       if(sensataStream)
       {
         readSensatas();
+        printReadings();
       }
 
       sendSensorValues();
